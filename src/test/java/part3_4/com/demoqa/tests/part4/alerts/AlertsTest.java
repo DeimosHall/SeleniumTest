@@ -5,9 +5,9 @@ import org.testng.annotations.Test;
 import part3_4.com.demoqa.base.BaseTest;
 import utilities.SwitchToUtility;
 
+@Test
 public class AlertsTest extends BaseTest {
 
-    @Test
     public void testAlerts() throws InterruptedException {
         var alertsPage = homePage.goToWindowsPage().clickAlertsPage();
         alertsPage.clickAlertButton();
@@ -16,5 +16,25 @@ public class AlertsTest extends BaseTest {
         String expectedAlertText = "You clicked a button";
         Assert.assertEquals(alertText, expectedAlertText);
         SwitchToUtility.acceptAlert();
+    }
+
+    public void testConfirmationAccepts() throws InterruptedException {
+        var alertsPage = homePage.goToWindowsPage().clickAlertsPage();
+        alertsPage.clickConfirmationAlertButton();
+        Thread.sleep(2000);
+        SwitchToUtility.acceptAlert();
+        String resultText = alertsPage.getConfirmationResultText();
+        String expectedAcceptText = "You selected Ok";
+        Assert.assertEquals(resultText, expectedAcceptText);
+    }
+
+    public void testConfirmationDismiss() throws InterruptedException {
+        var alertsPage = homePage.goToWindowsPage().clickAlertsPage();
+        alertsPage.clickConfirmationAlertButton();
+        Thread.sleep(2000);
+        SwitchToUtility.dismissAlert();
+        String resultText = alertsPage.getConfirmationResultText();
+        String expectedDismissText = "You selected Cancel";
+        Assert.assertEquals(resultText, expectedDismissText);
     }
 }
