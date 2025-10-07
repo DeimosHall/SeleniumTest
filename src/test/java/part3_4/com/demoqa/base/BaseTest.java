@@ -2,13 +2,22 @@ package part3_4.com.demoqa.base;
 
 import com.demoqa.pages.HomePage;
 import com.base.BasePage;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.io.FileHandler;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import utilities.JavaScriptUtility;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalTime;
 
 public class BaseTest {
 
@@ -35,6 +44,23 @@ public class BaseTest {
         basePage.setDriver(driver);
         JavaScriptUtility.setUtilityDriver();
         homePage = new HomePage();
+    }
+
+    @AfterMethod
+    public void takeFailedResultScreenshot(ITestResult testResult) {
+        if (testResult.getStatus() == ITestResult.FAILURE) {
+            TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
+            File source = takesScreenshot.getScreenshotAs(OutputType.FILE);
+            File destination = new File(System.getProperty("user.dir")
+                    + "/resources/screenshots/(" + LocalTime.now() + ")" + testResult.getName() + ".png");
+            try {
+                FileHandler.copy(source, destination);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            System.out.println("Screenshot taken");
+        }
     }
 
     @AfterClass
